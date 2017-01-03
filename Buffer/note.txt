@@ -1,0 +1,30 @@
+strategyGetBuffer - 298; modificar algoritmo
+ClockSweepTick - 113; Modificar para conseguir a próxima vítima
+BufferStrategyControl - 30 ; Modificar para estruturas necessária
+StrategyInitialize - 495 ; mudar inicialização da estrutura
+
+BufferAccessStrategyData - 71 ; analisar
+
+StrategyFreeBuffer - 347 ; adicionar buffer livre na lista
+
+StrategyShmemSize - 437 ; modificar retorno do tamanho da lista de buffers livres
+
+
+
+
+OBS.: (var % NBuffers) parece transformar um buffer virtual em real
+
+Pode ser necessário mudar a chamada do método na linha 1071 de bufmgr.c para adicionar o número do bloco.
+
+1135 de bufmgr.c é feita a escrita do bloco no disco.
+
+em 1444 de bufmgr.c está a função para marcar um buffer como dirty (Em 3362 há uma função parecida)
+
+em 640 de bufmgr.c está função readBuffer
+
+
+romovido aumento de tamanho em miss de listas fantasmas, pois só seria possível em listas de leitura já que ao saber que a operação é de leitura ela já foi colocada no buffer, portanto isto beneficiaria apenas a área de leitura o que não é o intuito.
+
+
+
+linha 596 em bufmgr.c mudar ultimo parâmetro para a novo estratégia(BufferAccessStrategy).

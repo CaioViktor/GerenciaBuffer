@@ -1,0 +1,55 @@
+
+	else{//Operação de leitura, aqui são inseridos novos buffers
+		if(estavaFantasma != 0 ){//estava em lista fantasma
+			// buffer = realRemoveLRU(pool->areaLeitura,1);
+			if(pool->areaLeitura->FA->tamanhoAtual < pool->areaLeitura->FA->tamanhoMaximo){
+				buffer = realRemoveLRU(pool->areaLeitura,2);
+				if(buffer != NULL)
+					realInserirBuffer(pool->areaLeitura,1);
+				else{
+					if(pool->conselheiroFrequenciaLeitura == 0 || !conselhos){//Deve remover da propria lista
+						buffer = realRemoveLRU(pool->areaLeitura,1);
+						buffer->pagina = NULL;
+						realInserirBuffer(pool->areaLeitura,1,buffer);
+					}else{//Deve aumentar a lista
+						if(pool->conselheiroAreaEscrita >= 0){//deve remover da lista oposta
+							buffer = realRemoveLRU(pool->areaLeitura,0);
+							buffer->pagina = NULL;
+							pool->areaLeitura->RA--;
+							pool->areaLeitura->FA++;
+							realInserirBuffer(pool->areaLeitura,1,buffer);
+							if(pool->conselheiroFrequenciaLeitura > 0)
+								pool->conselheiroFrequenciaLeitura--;
+						}else{//deve aumentar a área de leitura
+							pool->areaLeitura->tamanhoMaximo++;
+							pool->areaEscrita->tamanhoMaximo--;
+							// if(pool->con)
+							buffer = realRemoveLRU(pool->areaEscrita,2);
+							buffer->pagina = NULL;
+							if(buffer != NULL){
+								realInserirBuffer(pool->areaLeitura,1,Buffer);
+								pool->areaEscrita->livres->tamanhoMaximo--;
+							}
+							else{//Não havia buffer livre na região de escrita
+								if(pool->conselheiroFrequenciaEscrita < 0){
+									buffer = realRemoveLRU(pool->areaEscrita,2);
+									buffer->pagina = NULL;
+									buffer->areaEscrita->FA->tamanhoMaximo--;
+									realInserirBuffer(pool->areaLeitura,1,buffer);
+								}else{// Da prioridade para escritos frequentes, então remove recentes
+
+								}
+							}
+						}
+					}
+				}
+			}else{//Não há espaço em FA
+
+			}
+		}
+		else{
+			buffer = realRemoveLRU(pool->areaLeitura,0);
+		}
+
+		
+	}
