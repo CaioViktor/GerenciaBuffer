@@ -28,3 +28,5 @@ romovido aumento de tamanho em miss de listas fantasmas, pois só seria possíve
 
 
 linha 596 em bufmgr.c mudar ultimo parâmetro para a novo estratégia(BufferAccessStrategy).
+
+BlockNumber é do tipo uint32
