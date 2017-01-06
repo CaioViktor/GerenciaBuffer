@@ -1045,7 +1045,9 @@ BufferAlloc(SMgrRelation smgr, char relpersistence, ForkNumber forkNum,
 				*foundPtr = FALSE;
 			}
 		}
+		// printf("Vai chamar bufhit\n");
 		hitBuffer(buf_id);//Atualiza listas (creio que é este id mesmo)
+		// printf("chamou bufhit\n");
 		return buf;
 	}
 
@@ -1458,7 +1460,11 @@ MarkBufferDirty(Buffer buffer)
 	}
 
 	bufHdr = GetBufferDescriptor(buffer - 1);
+	// printf("Vai chamar marcarBufferEscrita\n");
+
 	marcarBufferEscrita(bufHdr->buf_id);
+
+	// printf("chamou marcarBufferEscrita\n");
 
 	Assert(BufferIsPinned(buffer));
 	/* unfortunately we can't check if the lock is held exclusively */
@@ -3375,7 +3381,9 @@ MarkBufferDirtyHint(Buffer buffer, bool buffer_std)
 	}
 
 	bufHdr = GetBufferDescriptor(buffer - 1);
+	// printf("vai chamar marcarBufferEscrita hint\n");
 	marcarBufferEscrita(bufHdr->buf_id);
+	// printf("vai chamar marcarBufferEscrita hint\n");
 
 	Assert(GetPrivateRefCount(buffer) > 0);
 	/* here, either share or exclusive lock is OK */

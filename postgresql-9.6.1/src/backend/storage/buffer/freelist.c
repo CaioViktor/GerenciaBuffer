@@ -35,25 +35,25 @@ typedef struct
 
 	//Código Original - INÍCIO
 
-	// /*
-	//  * Clock sweep hand: index of next buffer to consider grabbing. Note that
-	//  * this isn't a concrete buffer - we only ever increase the value. So, to
-	//  * get an actual buffer, it needs to be used modulo NBuffers.
-	//  */
+	/*
+	 * Clock sweep hand: index of next buffer to consider grabbing. Note that
+	 * this isn't a concrete buffer - we only ever increase the value. So, to
+	 * get an actual buffer, it needs to be used modulo NBuffers.
+	 */
 	// pg_atomic_uint32 nextVictimBuffer;
 
-	// int			firstFreeBuffer;	/* Head of list of unused buffers */
+	// int			firstFreeBuffer;/*	 Head of list of unused buffers */
 	// int			lastFreeBuffer; /* Tail of list of unused buffers */
 
-	// /*
-	//  * NOTE: lastFreeBuffer is undefined when firstFreeBuffer is -1 (that is,
-	//  * when the list is empty)
-	//  */
+	/*
+	 * NOTE: lastFreeBuffer is undefined when firstFreeBuffer is -1 (that is,
+	 * when the list is empty)
+	 */
 
-	// /*
-	//  * Statistics.  These counters should be wide enough that they can't
-	//  * overflow during a single bgwriter cycle.
-	//  */
+	/*
+	 * Statistics.  These counters should be wide enough that they can't
+	 * overflow during a single bgwriter cycle.
+	 */
 	uint32		completePasses; /* Complete cycles of the clock sweep */
 	pg_atomic_uint32 numBufferAllocs;	/* Buffers allocated since last reset */
 
@@ -117,12 +117,12 @@ static void AddBufferToRing(BufferAccessStrategy strategy,
 
 //Código original - INÍCIO
 
-// /*
-//  * ClockSweepTick - Helper routine for StrategyGetBuffer()
-//  *
-//  * Move the clock hand one buffer ahead of its current position and return the
-//  * id of the buffer now under the hand.
-//  */
+/*
+ * ClockSweepTick - Helper routine for StrategyGetBuffer()
+ *
+ * Move the clock hand one buffer ahead of its current position and return the
+ * id of the buffer now under the hand.
+ */
 // static inline uint32
 // ClockSweepTick(void)
 // {
@@ -144,11 +144,11 @@ static void AddBufferToRing(BufferAccessStrategy strategy,
 // 		victim = victim % NBuffers;
 
 		
-// 		 * If we're the one that just caused a wraparound, force
+// 		 /* If we're the one that just caused a wraparound, force
 // 		 * completePasses to be incremented while holding the spinlock. We
 // 		 * need the spinlock so StrategySyncStart() can return a consistent
 // 		 * value consisting of nextVictimBuffer and completePasses.
-		 
+// 		 */
 // 		if (victim == 0)
 // 		{
 // 			uint32		expected;
@@ -314,47 +314,12 @@ StrategyGetBuffer(BufferAccessStrategy strategy, uint32 *buf_state,BlockNumber p
 	// 			if (strategy != NULL)
 	// 				AddBufferToRing(strategy, buf);
 	// 			*buf_state = local_buf_state;
-	// 			return buf;
+	// 			// return buf;
 	// 		}
 	// 		UnlockBufHdr(buf, local_buf_state);
 
 	// 	}
 	// }
-	SpinLockAcquire(&StrategyControl->buffer_strategy_lock);
-	estavaFantasma = atualizarConselheiros(StrategyControl->pool,pageId);
-	if(estavaFantasma != 0 ){//estava em lista fantasma
-		buffer = realInserir(StrategyControl->pool->areaLeitura,1,InvalidBlockNumber);
-
-	}
-	else{
-		// printf("leitura!!!!\n");
-		buffer = realInserir(StrategyControl->pool->areaLeitura,0,InvalidBlockNumber);
-		
-	}
-
-	
-
-	buf = GetBufferDescriptor(buffer->idBuffer);
-	Assert(buf->freeNext != FREENEXT_NOT_IN_LIST);
-	buf->freeNext = FREENEXT_NOT_IN_LIST;
-	
-
-	SpinLockRelease(&StrategyControl->buffer_strategy_lock);
-
-	local_buf_state = LockBufHdr(buf);
-	if (BUF_STATE_GET_REFCOUNT(local_buf_state) == 0
-		// && BUF_STATE_GET_USAGECOUNT(local_buf_state) == 0
-		)
-	{
-		if (strategy != NULL)
-			AddBufferToRing(strategy, buf);
-		*buf_state = local_buf_state;
-		return buf;
-	}
-
-	UnlockBufHdr(buf, local_buf_state);
-	elog(ERROR, "no unpinned buffers available");
-		
 
 
 
@@ -373,7 +338,7 @@ StrategyGetBuffer(BufferAccessStrategy strategy, uint32 *buf_state,BlockNumber p
 	// 	local_buf_state = LockBufHdr(buf);
 
 	// 	if (BUF_STATE_GET_REFCOUNT(local_buf_state) == 0)
-	// 	{
+	// 		{
 	// 		if (BUF_STATE_GET_USAGECOUNT(local_buf_state) != 0)
 	// 		{
 	// 			local_buf_state -= BUF_USAGECOUNT_ONE;
@@ -406,6 +371,53 @@ StrategyGetBuffer(BufferAccessStrategy strategy, uint32 *buf_state,BlockNumber p
 
 
 	//Código original - FIM
+
+
+	//Meu Código - INÍCIO
+	SpinLockAcquire(&StrategyControl->buffer_strategy_lock);
+	//printf("vai atualizarConselheiros\n");
+	estavaFantasma = atualizarConselheiros(StrategyControl->pool,pageId);
+	//printf("foi atualizarConselheiros\n");
+	if(estavaFantasma != 0 ){//estava em lista fantasma
+		//printf("vai inserir leitura 1\n");
+		buffer = realInserir(StrategyControl->pool->areaLeitura,1,pageId);
+		//printf("inseriu leitura 1\n");
+	}
+	else{
+		// //printf("leitura!!!!\n");
+		//printf("vai inserir leitura 0\n");
+		buffer = realInserir(StrategyControl->pool->areaLeitura,0,pageId);
+		//printf("inseriu leitura 0\n");	
+	}
+
+	buffer->usos =	0;
+
+	buf = GetBufferDescriptor(buffer->idBuffer);
+	Assert(buf->freeNext != FREENEXT_NOT_IN_LIST);
+	buf->freeNext = FREENEXT_NOT_IN_LIST;
+	
+
+	SpinLockRelease(&StrategyControl->buffer_strategy_lock);
+
+	local_buf_state = LockBufHdr(buf);
+	//printf("vai vem state\n");
+	if (BUF_STATE_GET_REFCOUNT(local_buf_state) == 0
+		// && BUF_STATE_GET_USAGECOUNT(local_buf_state) == 0
+		)
+	{
+		//printf("vai retornar buffer\n");
+		if (strategy != NULL)
+			AddBufferToRing(strategy, buf);
+		*buf_state = local_buf_state;
+		return buf;
+	}
+
+	//printf("erro buffer\n");
+	UnlockBufHdr(buf, local_buf_state);
+	elog(ERROR, "no unpinned buffers available");
+		
+	//Meu Código - FIM
+
 }
 
 /*
@@ -414,9 +426,39 @@ StrategyGetBuffer(BufferAccessStrategy strategy, uint32 *buf_state,BlockNumber p
 void
 StrategyFreeBuffer(BufferDesc *buf)
 {
+	//printf("Pondo buffer livre\n");
 	BufferN *block = NULL;
 	SpinLockAcquire(&StrategyControl->buffer_strategy_lock);
 
+
+
+	//Meu Código - INÍCIO
+
+	block = realRemovePorIdBuffer(StrategyControl->pool->areaLeitura,0,buf->buf_id);
+	if(block != NULL){
+		realInserirBuffer(StrategyControl->pool->areaLeitura,2,block);
+		// //printf("frequencia leitura\n");
+	}else{
+		block = realRemovePorIdBuffer(StrategyControl->pool->areaLeitura,1,buf->buf_id);
+		if(block != NULL){
+			realInserirBuffer(StrategyControl->pool->areaLeitura,2,block);
+			// //printf("frequencia escrita\n");		
+		}else{
+			block = realRemovePorIdBuffer(StrategyControl->pool->areaEscrita,0,buf->buf_id);
+			if(block != NULL){
+				realInserirBuffer(StrategyControl->pool->areaEscrita,2,block);
+				// //printf("frequencia escrita\n");		
+			}else{
+				block = realRemovePorIdBuffer(StrategyControl->pool->areaEscrita,1,buf->buf_id);
+				if(block != NULL){
+					realInserirBuffer(StrategyControl->pool->areaEscrita,2,block);
+					// //printf("frequencia escrita\n");		
+				}
+			}
+		}
+	}
+
+	//Meu Código - FIM
 
 	//Código Original - INÍCIO
 	/*
@@ -430,30 +472,6 @@ StrategyFreeBuffer(BufferDesc *buf)
 	// 		StrategyControl->lastFreeBuffer = buf->buf_id;
 	// 	StrategyControl->firstFreeBuffer = buf->buf_id;
 	// }
-	block = realRemovePorIdBuffer(StrategyControl->pool->areaLeitura,0,buf->buf_id);
-	if(block != NULL){
-		realInserirBuffer(StrategyControl->pool->areaLeitura,2,block);
-		// printf("frequencia leitura\n");
-	}else{
-		block = realRemovePorIdBuffer(StrategyControl->pool->areaLeitura,1,buf->buf_id);
-		if(block != NULL){
-			realInserirBuffer(StrategyControl->pool->areaLeitura,2,block);
-			// printf("frequencia escrita\n");		
-		}else{
-			block = realRemovePorIdBuffer(StrategyControl->pool->areaEscrita,0,buf->buf_id);
-			if(block != NULL){
-				realInserirBuffer(StrategyControl->pool->areaEscrita,2,block);
-				// printf("frequencia escrita\n");		
-			}else{
-				block = realRemovePorIdBuffer(StrategyControl->pool->areaEscrita,1,buf->buf_id);
-				if(block != NULL){
-					realInserirBuffer(StrategyControl->pool->areaEscrita,2,block);
-					// printf("frequencia escrita\n");		
-				}
-			}
-		}
-	}
-
 	//Código Original - FIM
 
 	SpinLockRelease(&StrategyControl->buffer_strategy_lock);
@@ -477,10 +495,16 @@ StrategySyncStart(uint32 *complete_passes, uint32 *num_buf_alloc)
 	int			result;
 
 	SpinLockAcquire(&StrategyControl->buffer_strategy_lock);
-	// nextVictimBuffer = pg_atomic_read_u32(&StrategyControl->nextVictimBuffer);
+
+	//Meu Código - INÍCIO
 	result = StrategyControl->pool->areaLeitura->livres->inicio->bufferCabeca->idBuffer;
 	nextVictimBuffer = StrategyControl->pool->areaLeitura->livres->tamanhoMaximo - StrategyControl->pool->areaLeitura->livres->tamanhoAtual;//Não sei qual deveria ser esse valor(pode vir a dar um erro bem cabulozo, mas deixa para depois)
+	//Meu Código - FIM
+
+	//Código originial - INÍCIO
+	// nextVictimBuffer = pg_atomic_read_u32(&StrategyControl->nextVictimBuffer);
 	// result = nextVictimBuffer % NBuffers;
+	//Código originial - FIM
 
 	if (complete_passes)
 	{
@@ -586,16 +610,21 @@ StrategyInitialize(bool init)
 
 		SpinLockInit(&StrategyControl->buffer_strategy_lock);
 		
+		//Meu código - INÍCIO
+		StrategyControl->pool = (BufferPool*) palloc0(sizeof(BufferPool));
+		initBufferPoolN(StrategyControl->pool,NBuffers);
+
+		//Meu código - FIM
 
 
 		//Código original - INÍCIO
 
 
 
-		// /*
-		//  * Grab the whole linked list of free buffers for our strategy. We
-		//  * assume it was previously set up by InitBufferPool().
-		//  */
+		/*
+		 * Grab the whole linked list of free buffers for our strategy. We
+		 * assume it was previously set up by InitBufferPool().
+		 */
 		// StrategyControl->firstFreeBuffer = 0;
 		// StrategyControl->lastFreeBuffer = NBuffers - 1;
 
@@ -603,18 +632,13 @@ StrategyInitialize(bool init)
 		// pg_atomic_init_u32(&StrategyControl->nextVictimBuffer, 0);
 
 		// /* Clear statistics */
-		StrategyControl->completePasses = 0;
-		pg_atomic_init_u32(&StrategyControl->numBufferAllocs, 0);
+		// StrategyControl->completePasses = 0;
+		// pg_atomic_init_u32(&StrategyControl->numBufferAllocs, 0);
 
 
 
 		//Código original - FIM
 
-		//Meu código - INÍCIO
-
-		initBufferPool(StrategyControl->pool,NBuffers);
-
-		//Meu código - FIM
 		/* No pending notification */
 		StrategyControl->bgwprocno = -1;
 	}
@@ -806,30 +830,36 @@ StrategyRejectBuffer(BufferAccessStrategy strategy, BufferDesc *buf)
 void hitBuffer(int bufferId){
 	BufferN* block;
 	block = NULL;
+	//printf("entrou bufferhit %d\n",bufferId);
 	SpinLockAcquire(&StrategyControl->buffer_strategy_lock);
-
+	//printf("conseguiu lock\n");
 	if(!(StrategyControl->pool->areaLeitura->tamanhoAtual + StrategyControl->pool->areaLeitura->tamanhoMaximoFantasma >= NBuffers)){//Basta olhar apenas na de leitura, pois a página só é escrita posteriormente
+		//printf("vai seguirConselhos\n");
 		seguirConselhos(StrategyControl->pool);
+		//printf("foi seguirConselhos\n");
 	}
 	//Listas de frequência
+	//printf("vai recuperar leitura 1\n");
 	block = realRemovePorIdBuffer(StrategyControl->pool->areaLeitura,1,bufferId);
 	if(block != NULL){
 		block->usos++;
 		realInserirBuffer(StrategyControl->pool->areaLeitura,1,block);
-		// printf("frequencia leitura\n");
+		//printf("frequencia leitura\n");
 	}
 	else{
+		//printf("vai recuperar escrita 1\n");
 		block = realRemovePorIdBuffer(StrategyControl->pool->areaEscrita,1,bufferId);
 		if(block != NULL){
 			block->usos++;
 			realInserirBuffer(StrategyControl->pool->areaEscrita,1,block);
-			// printf("frequencia escrita\n");		
+			//printf("frequencia escrita\n");		
 		}
 	}
 	//Listas de frequência
 
 	//Listas de resência
 	if(block == NULL){
+		//printf("vai recuperar leitura 0\n");
 		block = realRemovePorIdBuffer(StrategyControl->pool->areaLeitura,0,bufferId);
 		if(block != NULL){
 			// realInserirBuffer(StrategyControl->pool->areaLeitura,2,block);
@@ -839,8 +869,9 @@ void hitBuffer(int bufferId){
 			block = realInserirBufferExistente(StrategyControl->pool->areaLeitura,1,block);
 			if(block!=NULL)
 				realInserirBuffer(StrategyControl->pool->areaLeitura,2,block);
-			// printf("resencia leitura\n");
+			//printf("resencia leitura\n");
 		}else{
+			//printf("vai recuperar escrita 0\n");
 			block = realRemovePorIdBuffer(StrategyControl->pool->areaEscrita,0,bufferId);
 			if(block != NULL){
 				block->usos++;
@@ -850,7 +881,7 @@ void hitBuffer(int bufferId){
 				block = realInserirBufferExistente(StrategyControl->pool->areaEscrita,1,block);
 				if(block!=NULL)
 					realInserirBuffer(StrategyControl->pool->areaEscrita,2,block);
-				// printf("resencia escrita buffer %d\tpagina %d\n",block->idBuffer,block->pagina->idPagina);
+				//printf("resencia escrita buffer \n");
 			}
 		}	
 	}
@@ -865,11 +896,24 @@ void marcarBufferEscrita(int idBuffer){
 	buffer = realRemovePorIdBuffer(StrategyControl->pool->areaEscrita,1,idBuffer);
 	if(buffer != NULL){//Verifuca se buffer já havia sido adicionado em escrita frequente
 		buffer->usos++;
-		realInserirBuffer(StrategyControl->pool->areaEscrita,1,buffer);
+		buffer = realInserirBufferExistente(StrategyControl->pool->areaEscrita,1,buffer);
+		if(buffer != NULL)
+			realInserirBuffer(StrategyControl->pool->areaEscrita,2,buffer);
+		SpinLockRelease(&StrategyControl->buffer_strategy_lock);
 		return ;
+	}else{
+		buffer = realRemovePorIdBuffer(StrategyControl->pool->areaEscrita,0,idBuffer);
+		if(buffer != NULL){//Verifuca se buffer já havia sido adicionado em escrita recente
+			buffer->usos++;
+			buffer = realInserirBufferExistente(StrategyControl->pool->areaEscrita,1,buffer);
+			if(buffer != NULL)
+				realInserirBuffer(StrategyControl->pool->areaEscrita,2,buffer);
+			SpinLockRelease(&StrategyControl->buffer_strategy_lock);
+			return ;
+		}	
 	}
 
-	// printf("escrevendo\n");
+	// //printf("escrevendo\n");
 	buffer = realRemovePorIdBuffer(StrategyControl->pool->areaLeitura,0,idBuffer);
 	if(buffer != NULL){
 		buffer->usos++;
@@ -877,6 +921,8 @@ void marcarBufferEscrita(int idBuffer){
 			buffer = realInserirBufferExistente(StrategyControl->pool->areaEscrita,1,buffer);
 		else
 			buffer = realInserirBufferExistente(StrategyControl->pool->areaEscrita,0,buffer);
+		if(buffer == NULL)
+			buffer = realRemoveLRU(StrategyControl->pool->areaEscrita,2);
 		if(buffer != NULL)
 			realInserirBuffer(StrategyControl->pool->areaLeitura,2,buffer);
 	}else{
@@ -927,8 +973,11 @@ void initArea(AreaBuffer *area, int tamanhoMaximo){
 	area->tamanhoAtual = 0;
 }
 
-void initBufferPool(BufferPool* bufferPool,int buffer_size){
-	bufferPool->areaEscrita = malloc(sizeof(AreaBuffer));
+void initBufferPoolN(BufferPool* bufferPool,int buffer_size){
+	int i = 1;
+
+	//printf("Buffer size %d\n",buffer_size );
+	bufferPool->areaEscrita = malloc(sizeof(AreaBuffer));//Talvez seja necessário usar palloc0
 	bufferPool->areaLeitura = malloc(sizeof(AreaBuffer));
 
 	initArea(bufferPool->areaEscrita,(int)buffer_size/2);
@@ -938,7 +987,7 @@ void initBufferPool(BufferPool* bufferPool,int buffer_size){
 	bufferPool->conselheiroFrequenciaEscrita = 0;
 	bufferPool->conselheiroAreaEscrita = 0;
 	
-	for(int i = 1 ; i <= (int)buffer_size/2 ; i++){
+	for(i = 1 ; i <= (int)buffer_size/2 ; i++){
 		BufferN *buffers1 = malloc(sizeof(BufferN));
 		BufferN *buffers2 = malloc(sizeof(BufferN));
 		
@@ -998,7 +1047,7 @@ int fantasmaRemoveLRU(AreaBuffer *area, int list){
 		area->tamanhoAtualFantasma--;
 		id = ret->idPaginaFantasma;
 		free(ret);
-		// printf("Removido do fantasma %d\n",id);
+		// //printf("Removido do fantasma %d\n",id);
 		return id;
 	}
 	return -1;
@@ -1062,7 +1111,7 @@ int fantasmaInserir(AreaBuffer *area, int list, BlockNumber pageId){
 
 	if(lista->tamanhoAtual >= lista->tamanhoMaximo){
 		fantasmaRemoveLRU(area,list);
-		// printf("Inserido na fatasma: %d\tRemovido Fatasma: %d\n",pageId,fantasmaRemoveLRU(area,list));
+		// //printf("Inserido na fatasma: %d\tRemovido Fatasma: %d\n",pageId,fantasmaRemoveLRU(area,list));
 	}
 
 	elemento = malloc(sizeof(ElementoFantasma));
@@ -1162,7 +1211,7 @@ int realContem(AreaBuffer *area, int list, BlockNumber idPagina){
 }
 
 BufferN* realRemoveLRU(AreaBuffer *area, int list){
-	// printf("%d Removendo LRU\n",list);
+	// //printf("%d Removendo LRU\n",list);
 	ListaReal *lista;
 	ElementoReal *ret;
 	BufferN *bufret;
@@ -1173,22 +1222,22 @@ BufferN* realRemoveLRU(AreaBuffer *area, int list){
 		if(lista->tamanhoAtual == 1){
 			lista->inicio = NULL;
 			lista->fim = NULL;
-			// printf("Acertou ponteiros\n");
+			// //printf("Acertou ponteiros\n");
 		}else{
 			lista->inicio = ret->cauda;
 		}
 
 		lista->tamanhoAtual--;
-		// printf("Diminui contador\n");
+		// //printf("Diminui contador\n");
 		if(list == 0 || list == 1)
 			area->tamanhoAtual--;
 		bufret = ret->bufferCabeca;
-		// printf("BufferID removendo: %d\ttamanho: %d\tLista:%d\n",bufret->idBuffer,lista->tamanhoAtual,list);
+		// //printf("BufferID removendo: %d\ttamanho: %d\tLista:%d\n",bufret->idBuffer,lista->tamanhoAtual,list);
 		free(ret);
-		// printf("Deu free\n");
+		// //printf("Deu free\n");
 		return bufret;
 	}
-	// printf("%d Não fez nada\n",list);
+	// //printf("%d Não fez nada\n",list);
 	return NULL;
 }
 
@@ -1234,23 +1283,23 @@ BufferN* realRemovePorIdPagina(AreaBuffer *area, int list, BlockNumber idPagina)
 }
 
 
-void showArea(AreaBuffer *area){
-	ListaReal *lista = NULL;
-	ElementoReal *elemento;
-	for(int i = 0 ; i < 3 ;i++){
-		lista = getList(area,i);
-		printf("lista %d tamanhoAtual %d: ",i,lista->tamanhoAtual);
-		elemento = lista->inicio;
-		while(elemento != NULL){
-			printf(";buffer %d \t",elemento->bufferCabeca->idBuffer);
-			if(BlockNumberIsValid(elemento->bufferCabeca->idPagina))
-				printf("pagina %d \t",elemento->bufferCabeca->idPagina);
+// void showArea(AreaBuffer *area){
+// 	ListaReal *lista = NULL;
+// 	ElementoReal *elemento;
+// 	for(int i = 0 ; i < 3 ;i++){
+// 		lista = getList(area,i);
+// 		//printf("lista %d tamanhoAtual %d: ",i,lista->tamanhoAtual);
+// 		elemento = lista->inicio;
+// 		while(elemento != NULL){
+// 			//printf(";buffer %d \t",elemento->bufferCabeca->idBuffer);
+// 			if(BlockNumberIsValid(elemento->bufferCabeca->idPagina))
+// 				//printf("pagina %d \t",elemento->bufferCabeca->idPagina);
 			
-			elemento = elemento->cauda;
-		}
-		printf("\n\n");
-	}
-}
+// 			elemento = elemento->cauda;
+// 		}
+// 		//printf("\n\n");
+// 	}
+// }
 
 int realInserirBuffer(AreaBuffer *area,int list ,BufferN *buffer){
 	ListaReal *lista;
@@ -1300,13 +1349,13 @@ BufferN* realInserir(AreaBuffer *area, int list, BlockNumber idPagina){
 		return NULL;
 
 	//Passa LRU para fantasma
-	// printf("vai remover LRU para mandar para zona fantasma %d\n",lista->tamanhoMaximo);
+	// //printf("vai remover LRU para mandar para zona fantasma %d\n",lista->tamanhoMaximo);
 	// showArea(area);
 	buffer = realRemoveLRU(area,list);
-	// printf("BufferID: %d\n",buffer->idBuffer);
+	// //printf("BufferID: %d\n",buffer->idBuffer);
 	idPaginaAux = buffer->idPagina;
 	fantasmaInserir(area,list,idPaginaAux);
-	// printf("Está cheio \n",);
+	// //printf("Está cheio \n",);
 	// free(buffer->pagina);
 	buffer->idPagina = idPagina;
 
@@ -1348,12 +1397,12 @@ BufferN* realInserirBufferExistente(AreaBuffer *area, int list,BufferN *buffer){
 		return NULL;
 
 	//Passa LRU para fantasma
-	// printf("vai remover LRU para mandar para zona fantasma %d\n",lista->tamanhoMaximo);
+	// //printf("vai remover LRU para mandar para zona fantasma %d\n",lista->tamanhoMaximo);
 	// showArea(area);
 	bufferret = realRemoveLRU(area,list);
-	// printf("BufferID: %d\n",buffer->idBuffer);
+	// //printf("BufferID: %d\n",buffer->idBuffer);
 	fantasmaInserir(area,list,bufferret->idPagina);
-	// printf("Está cheio \n",);
+	// //printf("Está cheio \n",);
 	// free(buffer->pagina);
 
 	//Insere pagina na lista
@@ -1418,7 +1467,7 @@ void conselhoListas(BufferPool *pool,int tipo){//tipo = 0 leitura, 1 escrita
 	
 	if(tipo == 0){
 		if(pool->conselheiroFrequenciaLeitura > 0){//Aumenta área de frequencia
-			// printf("aumenta frequencia leitura\n");
+			// //printf("aumenta frequencia leitura\n");
 
 			pool->conselheiroFrequenciaLeitura--;
 
@@ -1430,7 +1479,7 @@ void conselhoListas(BufferPool *pool,int tipo){//tipo = 0 leitura, 1 escrita
 				// pool->areaLeitura->GRA->tamanhoMaximo--;
 			}
 		}else{//Aumenta área de recentes
-			// printf("aumenta recencia leitura\n");
+			// //printf("aumenta recencia leitura\n");
 
 			pool->conselheiroFrequenciaLeitura++;
 
@@ -1445,7 +1494,7 @@ void conselhoListas(BufferPool *pool,int tipo){//tipo = 0 leitura, 1 escrita
 	}else if(tipo == 1){
 
 		if(pool->conselheiroFrequenciaEscrita > 0){//Aumenta área de frequencia
-			// printf("aumenta frequencia escrita\n");
+			// //printf("aumenta frequencia escrita\n");
 			
 			pool->conselheiroFrequenciaEscrita--;
 
@@ -1457,7 +1506,7 @@ void conselhoListas(BufferPool *pool,int tipo){//tipo = 0 leitura, 1 escrita
 				// pool->areaEscrita->GRA->tamanhoMaximo--;
 			}
 		}else{//Aumenta área de recentes
-			// printf("aumenta recencia escrita\n");
+			// //printf("aumenta recencia escrita\n");
 
 			pool->conselheiroFrequenciaEscrita++;
 
@@ -1489,7 +1538,7 @@ void seguirConselhos(BufferPool *pool){
 
 	while(pool->conselheiroAreaEscrita != 0){
 		if(pool->conselheiroAreaEscrita > 0){//Área de escrita deve aumentar
-			// printf("Aumentando área escrita\n");
+			// //printf("Aumentando área escrita\n");
 			pool->conselheiroAreaEscrita--;
 
 			pool->areaEscrita->tamanhoMaximo++;
@@ -1502,7 +1551,7 @@ void seguirConselhos(BufferPool *pool){
 			if(buffer == NULL){//remove um buffer livre da leitura
 				//não há buffer de leitura livre
 				if(pool->conselheiroFrequenciaLeitura < 0){
-					// printf("remove de frequencia no conselho\n");
+					// //printf("remove de frequencia no conselho\n");
 					buffer = realRemoveLRU(pool->areaLeitura,1);
 				}else{//dá preferência para área de frquência
 					buffer = realRemoveLRU(pool->areaLeitura,0);
@@ -1521,13 +1570,13 @@ void seguirConselhos(BufferPool *pool){
 			pool->areaEscrita->tamanhoMaximo--;
 			pool->areaEscrita->livres->tamanhoMaximo--;
 
-			// printf("Aumentando área Leitura\n");
+			// //printf("Aumentando área Leitura\n");
 
 			buffer = realRemoveLRU(pool->areaEscrita,2);
 			if(buffer == NULL){//remove um buffer livre da escrita
 				//não há buffer de escrita livre
 				if(pool->conselheiroFrequenciaEscrita < 0){
-					// printf("remove de frequencia no conselho\n");
+					// //printf("remove de frequencia no conselho\n");
 					buffer = realRemoveLRU(pool->areaEscrita,1);
 				}else{//dá preferência para área de frquência
 					buffer = realRemoveLRU(pool->areaEscrita,0);
@@ -1600,7 +1649,7 @@ void seguirConselhos(BufferPool *pool){
 	}
 
 	while(pool->conselheiroFrequenciaLeitura != 0 ){
-		// printf("vai seguir conselho %d\n",pool->conselheiroFrequenciaLeitura);
+		// //printf("vai seguir conselho %d\n",pool->conselheiroFrequenciaLeitura);
 		conselhoListas(pool,0);
 	}
 
@@ -1616,7 +1665,7 @@ int atualizarConselheiros(BufferPool *pool, BlockNumber idBlock){
 	BlockNumber id = InvalidBlockNumber;
 	id = fantasmaRemovePorIdPagina(pool->areaLeitura,0,idBlock);
 	if(BlockNumberIsValid(id)){//Estava na lista fantasma de leitura recente.
-		// printf("conselho lr\n");
+		// //printf("conselho lr\n");
 		// ListaReal *oposta = getList(pool->areaLeitura,1);
 		if(pool->areaEscrita->tamanhoMaximo > pool->areaLeitura->tamanhoMaximo / 4){
 		// if(pool->areaEscrita->tamanhoAtual < (int)  pool->areaEscrita->tamanhoMaximo/2 ){//aconselha aumentar lista de leitura
@@ -1627,7 +1676,7 @@ int atualizarConselheiros(BufferPool *pool, BlockNumber idBlock){
 	}else{
 		id = fantasmaRemovePorIdPagina(pool->areaLeitura,1,idBlock);
 		if(BlockNumberIsValid(id)){//Estava na lista fantasma de leitura frequente.
-			// printf("conselho lf\n");
+			// //printf("conselho lf\n");
 			// ListaReal *oposta = getList(pool->areaLeitura,0);
 			if(pool->areaEscrita->tamanhoMaximo > pool->areaLeitura->tamanhoMaximo / 4){
 			// if(pool->areaEscrita->tamanhoAtual < (int)  pool->areaEscrita->tamanhoMaximo/2){//aconselha aumentar lista de leitura
@@ -1637,7 +1686,7 @@ int atualizarConselheiros(BufferPool *pool, BlockNumber idBlock){
 		}else{
 			id = fantasmaRemovePorIdPagina(pool->areaEscrita,0,idBlock);
 			if(BlockNumberIsValid(id)){//Estava na lista fantasma de escrita recente.
-				// printf("conselho er\n");
+				// //printf("conselho er\n");
 				// ListaReal *oposta = getList(pool->areaEscrita,1);
 				if(pool->areaLeitura->tamanhoMaximo > pool->areaEscrita->tamanhoMaximo / 4){
 				// if(pool->areaLeitura->tamanhoAtual < (int)  pool->areaLeitura->tamanhoMaximo/2 ){//aconselha aumentar lista de escrita
@@ -1649,7 +1698,7 @@ int atualizarConselheiros(BufferPool *pool, BlockNumber idBlock){
 				// 	return -1;
 				id = fantasmaRemovePorIdPagina(pool->areaEscrita,1,idBlock);
 				if(BlockNumberIsValid(id)){//Estava na lista fantasma de escrita frequente
-					// printf("conselho ef\n");
+					// //printf("conselho ef\n");
 					// ListaReal *oposta = getList(pool->areaEscrita,0);
 					if(pool->areaLeitura->tamanhoMaximo > pool->areaEscrita->tamanhoMaximo / 4){
 					// if(pool->areaLeitura->tamanhoAtual < (int)  pool->areaLeitura->tamanhoMaximo/2 ){//aconselha aumentar lista de leitura

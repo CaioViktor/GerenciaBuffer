@@ -1,0 +1,223 @@
+LOG:  database system was shut down at 2017-01-05 21:05:35 BRT
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections
+LOG:  autovacuum launcher started
+LOG:  background writer process (PID 24951) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:50 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F2DE0: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections
+LOG:  autovacuum launcher started
+LOG:  background writer process (PID 24958) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:50 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F2E50: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections
+LOG:  autovacuum launcher started
+LOG:  background writer process (PID 24965) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:51 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F2EC0: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections
+LOG:  autovacuum launcher started
+LOG:  background writer process (PID 24972) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:51 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F2F30: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections
+LOG:  background writer process (PID 24979) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:52 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F2FA0: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections
+LOG:  autovacuum launcher started
+LOG:  background writer process (PID 24986) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:52 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F3010: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections
+LOG:  autovacuum launcher started
+LOG:  background writer process (PID 24993) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:53 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F3080: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  autovacuum launcher started
+LOG:  database system is ready to accept connections
+LOG:  background writer process (PID 25000) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:53 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F30F0: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  autovacuum launcher started
+LOG:  database system is ready to accept connections
+LOG:  background writer process (PID 25007) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:54 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F3160: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections
+LOG:  autovacuum launcher started
+LOG:  background writer process (PID 25014) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:54 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F31D0: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections
+LOG:  autovacuum launcher started
+LOG:  background writer process (PID 25021) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:55 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F3240: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections
+LOG:  autovacuum launcher started
+LOG:  background writer process (PID 25028) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:56 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F32B0: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  autovacuum launcher started
+LOG:  database system is ready to accept connections
+LOG:  background writer process (PID 25035) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:56 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F3320: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  autovacuum launcher started
+LOG:  database system is ready to accept connections
+LOG:  background writer process (PID 25042) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:57 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F3390: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  autovacuum launcher started
+LOG:  database system is ready to accept connections
+LOG:  background writer process (PID 25049) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:57 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F3400: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  autovacuum launcher started
+LOG:  database system is ready to accept connections
+LOG:  background writer process (PID 25056) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:58 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F3470: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  autovacuum launcher started
+LOG:  database system is ready to accept connections
+LOG:  background writer process (PID 25063) was terminated by signal 11: Segmentation fault
+LOG:  terminating any other active server processes
+WARNING:  terminating connection because of crash of another server process
+DETAIL:  The postmaster has commanded this server process to roll back the current transaction and exit, because another server process exited abnormally and possibly corrupted shared memory.
+HINT:  In a moment you should be able to reconnect to the database and repeat your command.
+LOG:  all server processes terminated; reinitializing
+LOG:  database system was interrupted; last known up at 2017-01-05 21:05:58 BRT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/14F34E0: wanted 24, got 0
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections

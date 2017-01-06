@@ -404,7 +404,7 @@ int realInserirBuffer(AreaBuffer *area,int list ,BufferN *buffer);
 void initListaReal(ListaReal *lista, int tamanhoMaximo);
 void initListaFantasma(ListaFantasma *lista, int tamanhoMaximo);
 void initArea(AreaBuffer *area, int tamanhoMaximo);
-void initBufferPool(BufferPool* bufferPool,int buffer_size);
+void initBufferPoolN(BufferPool* bufferPool,int buffer_size);
 ListaFantasma* getListFantasma(AreaBuffer *area,int list);
 int fantasmaContem(AreaBuffer *area, int list, BlockNumber idPagina);
 int fantasmaRemoveLRU(AreaBuffer *area, int list);
