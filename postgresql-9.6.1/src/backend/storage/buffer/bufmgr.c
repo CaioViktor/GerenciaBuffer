@@ -1046,7 +1046,7 @@ BufferAlloc(SMgrRelation smgr, char relpersistence, ForkNumber forkNum,
 			}
 		}
 		// printf("Vai chamar bufhit\n");
-		hitBuffer(buf_id);//Atualiza listas (creio que é este id mesmo)
+		hitBuffer(buf_id,blockNum);//Atualiza listas (creio que é este id mesmo)
 		// printf("chamou bufhit\n");
 		return buf;
 	}

@@ -423,7 +423,7 @@ void normalizarLista(AreaBuffer *area,int list);
 void conselhoListas(BufferPool *pool,int tipo);
 void seguirConselhos(BufferPool *pool);
 int atualizarConselheiros(BufferPool *pool, BlockNumber idBlock);
-void hitBuffer(int bufferId);
+void hitBuffer(int idBuffer,BlockNumber idBlock);
 BufferN* realInserirBufferExistente(AreaBuffer *area, int list,BufferN *buffer);
 void marcarBufferEscrita(int idBuffer);
 //Meu Código - FIM
